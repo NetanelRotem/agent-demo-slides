@@ -55,12 +55,6 @@ const css = `
 @keyframes lgGlow   { 0%, 100% { box-shadow: 0 0 24px rgba(200, 241, 53, 0.18); } 50% { box-shadow: 0 0 48px rgba(200, 241, 53, 0.42); } }
 @keyframes lgType   { from { width: 0; } to { width: var(--lg-chars); } }
 @keyframes lgDraw   { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-@keyframes lgTravel {
-  0% { offset-distance: 0%; opacity: 0; }
-  6% { opacity: 1; }
-  88% { opacity: 1; }
-  100% { offset-distance: 100%; opacity: 0; }
-}
 .lg-live .lg-type, [data-osd-step='revealed'] .lg-type-step {
   animation: lgType 1.1s steps(var(--lg-steps), end) 0.3s both;
 }
@@ -70,12 +64,6 @@ const css = `
 [data-osd-step='revealed'] .lg-draw { animation: lgDraw 0.6s ${EASE} both; }
 [data-osd-step='revealed'] .lg-head { animation: lgFade 0.2s ease-out 0.45s both; }
 [data-osd-step='revealed'] .lg-pop { animation: lgFadeUp 0.4s ${EASE} both; }
-.lg-packet { offset-rotate: 0deg; opacity: 0; }
-[data-osd-step='revealed'] .lg-packet {
-  animation-name: lgTravel;
-  animation-timing-function: cubic-bezier(0.45, 0, 0.25, 1);
-  animation-fill-mode: both;
-}
 `;
 
 if (typeof document !== 'undefined') {
@@ -153,7 +141,7 @@ const Footer = () => {
         color: c.muted,
       }}
     >
-      <span style={{ color: 'var(--osd-accent)' }}>{'// coding-agent-graph'}</span>
+      <span style={{ color: 'var(--osd-accent)' }}>{'// Netanel Rotem'}</span>
       <span>
         {String(current).padStart(2, '0')} / {String(total).padStart(2, '0')}
       </span>
@@ -426,44 +414,6 @@ const Arrow = ({
   );
 };
 
-// A labelled pill that travels along `pts` when its <Step> is revealed.
-const Packet = ({
-  pts,
-  color,
-  label,
-  dur = 2.4,
-  delay = 0,
-}: {
-  pts: Pt[];
-  color: string;
-  label: string;
-  dur?: number;
-  delay?: number;
-}) => (
-  <div
-    className="lg-packet"
-    style={{
-      position: 'absolute',
-      left: 0,
-      top: 0,
-      offsetPath: `path('${toPath(pts)}')`,
-      offsetDistance: '100%',
-      animationDuration: `${dur}s`,
-      animationDelay: `${delay}s`,
-      background: color,
-      color: c.bg,
-      fontFamily: mono,
-      fontSize: 20,
-      fontWeight: 700,
-      padding: '4px 14px',
-      borderRadius: 999,
-      whiteSpace: 'nowrap',
-      zIndex: 5,
-    }}
-  >
-    {label}
-  </div>
-);
 
 const Bullet = ({ children }: { children: ReactNode }) => (
   <div style={{ display: 'flex', gap: 18 }}>
@@ -712,34 +662,11 @@ const UserFlow: Page = () => (
         <Caption x={0} y={460} color={c.lime}>
           simple → straight to code
         </Caption>
-        <Packet
-          pts={[[100, 275], [400, 275], [930, 275], [1220, 275], [1550, 275]]}
-          color={c.lime}
-          label="simple"
-          dur={2.6}
-        />
       </Step>
       <Step>
         <Caption x={0} y={510} color={c.amber}>
           complex → a person approves first
         </Caption>
-        <Packet
-          pts={[
-            [100, 275],
-            [400, 275],
-            [400, 95],
-            [660, 95],
-            [930, 95],
-            [930, 275],
-            [1220, 275],
-            [1550, 275],
-            [1550, 505],
-            [1220, 505],
-          ]}
-          color={c.amber}
-          label="complex"
-          dur={4.2}
-        />
       </Step>
     </Steps>
   </Slide>
@@ -774,11 +701,15 @@ const Demo: Page = () => (
       </div>
       <div style={{ fontFamily: mono, fontSize: 26, color: c.text, lineHeight: 1.8 }}>
         <div>
-          <span style={{ color: c.lime }}>8</span> runs · <span style={{ color: c.lime }}>5</span> PRs
+          <span style={{ color: c.lime }}>96 s</span> /agent start → PR
         </div>
         <div>
-          <span style={{ color: c.lime }}>$1.04</span> total model cost
+          <span style={{ color: c.lime }}>$0.04</span> plan + code + 1 review round
         </div>
+        <div>
+          <span style={{ color: c.lime }}>19</span> tool calls · <span style={{ color: c.lime }}>0</span> approvals needed
+        </div>
+        <div style={{ color: c.muted }}>all runs: 8 runs · 5 PRs · $1.04</div>
       </div>
     </div>
     <div
@@ -893,25 +824,6 @@ const Architecture: Page = () => (
         <Arrow pts={[[950, 460], [950, 515], [1025, 515], [1025, 560]]} dashed color={c.amber} />
         <Arrow pts={[[1320, 460], [1320, 560]]} dashed color={c.coral} />
         <Arrow pts={[[1570, 460], [1570, 560]]} dashed color={c.coral} />
-      </Step>
-      <Step>
-        <Packet
-          pts={[
-            [145, 120],
-            [550, 120],
-            [550, 400],
-            [750, 400],
-            [750, 260],
-            [1445, 260],
-            [1445, 400],
-            [1320, 400],
-            [1320, 610],
-          ]}
-          color={c.cyan}
-          label="/agent start"
-          dur={3.6}
-        />
-        <Packet pts={[[550, 400], [145, 420], [145, 260]]} color={c.lime} label="PR #13" dur={1.4} delay={3.8} />
       </Step>
     </Steps>
   </Slide>
@@ -1041,23 +953,11 @@ const StateGraph: Page = () => (
         <Caption x={1180} y={60} color={c.lime}>
           simple: no human in the loop
         </Caption>
-        <Packet
-          pts={[[130, 245], [405, 245], [1040, 245], [1325, 245], [1560, 245]]}
-          color={c.lime}
-          label="run"
-          dur={2.6}
-        />
       </Step>
       <Step>
         <Caption x={1180} y={110} color={c.amber}>
           complex: pauses for approval
         </Caption>
-        <Packet
-          pts={[[130, 245], [405, 245], [405, 105], [720, 105], [1040, 105], [1040, 245], [1325, 245], [1560, 245]]}
-          color={c.amber}
-          label="run"
-          dur={3.6}
-        />
       </Step>
       <Step>
         <Zone x={260} y={430} w={1420} h={240} kind="github" label="2 · Review → new commit, every review round" />
@@ -1079,12 +979,6 @@ const StateGraph: Page = () => (
         <Caption x={1180} y={160} color={c.cyan}>
           review: same loop, new commit
         </Caption>
-        <Packet
-          pts={[[1560, 290], [1560, 395], [220, 395], [220, 535], [1045, 535], [1325, 535]]}
-          color={c.cyan}
-          label="review"
-          dur={3.4}
-        />
       </Step>
     </Steps>
   </Slide>
@@ -1216,11 +1110,9 @@ const FixLoop: Page = () => (
     <Steps>
       <Step>
         <Counter color={c.amber}>attempt 2 / 3</Counter>
-        <Packet pts={[[470, 200], [440, 330], [440, 460], [100, 460], [100, 200]]} color={c.danger} label="lint failed" dur={2.6} />
       </Step>
       <Step>
         <Counter color={c.success}>passed on attempt 2</Counter>
-        <Packet pts={[[130, 200], [470, 200], [800, 200]]} color={c.success} label="green" dur={1.8} />
       </Step>
     </Steps>
   </Slide>
@@ -1257,15 +1149,6 @@ const Security: Page = () => (
     <Arrow pts={[[1080, 205], [1130, 205], [1130, 430], [1260, 430]]} dashed color={c.danger} label="blocked" at={[1130, 330]} />
 
     <Steps>
-      <Step>
-        <Packet pts={[[260, 165], [870, 165]]} color={c.coral} label="placeholder" dur={1.6} />
-      </Step>
-      <Step>
-        <Packet pts={[[880, 185], [1170, 185], [1170, 250], [1420, 250]]} color={c.lime} label="real token" dur={1.6} />
-      </Step>
-      <Step>
-        <Packet pts={[[260, 240], [600, 240], [880, 205], [1130, 205], [1130, 430], [1200, 430]]} color={c.danger} label="evil.com" dur={2.4} />
-      </Step>
       <Step>
         <Box
           x={0}
@@ -1418,9 +1301,9 @@ Let the terminal finish typing before you speak.`,
   `Three boxes, left to right. The point: nobody leaves GitHub.`,
   `One card per click. These three rules shape every box in the architecture later.`,
   `First click: a simple change goes straight to code. Second click: a complex one stops at a person.`,
-  `Switch to the live demo here. Show the Issue, the comment, then the dashboard.`,
+  `Switch to the live demo here. Issue #12 went from /agent start to an open PR in 96 seconds, for four cents.`,
   `Four layers, left to right. For each box, say what you could swap in.`,
-  `Build it zone by zone. Last click: follow one comment all the way through and back as a PR.`,
+  `Build it zone by zone: GitHub, the server, the sandbox, then what sits around them. Follow one /agent comment with your finger: webhook, queue, graph, sbx exec, proxy, and back as a PR.`,
   `The key idea: a run waits for a person without any process waiting. interrupt() and resume.`,
   `Click 1: simple path. Click 2: the approval path. Click 3: the review lane.`,
   `This is not a slide drawing. LangGraph draws it from the code, and /graph shows it live.`,
