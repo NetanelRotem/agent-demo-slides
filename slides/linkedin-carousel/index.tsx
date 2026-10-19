@@ -554,46 +554,7 @@ const Security: Page = () => (
   </Frame>
 );
 
-// --- 10 · By the numbers ---
-
-const Stat = ({ value, label }: { value: string; label: string }) => (
-  <div
-    style={{
-      flex: 1,
-      background: c.surface,
-      border: `1px solid ${c.border}`,
-      borderRadius: 'var(--osd-radius)',
-      padding: '26px 28px',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 8,
-    }}
-  >
-    <div style={{ fontFamily: 'var(--osd-font-display)', fontSize: 84, lineHeight: 1, color: c.lime }}>{value}</div>
-    <div style={{ fontSize: 26, color: c.muted, lineHeight: 1.35 }}>{label}</div>
-  </div>
-);
-
-const Numbers: Page = () => (
-  <Frame>
-    <Head eyebrow="by the numbers">One real run, Issue #12</Head>
-    <Lead>"Keep todos after a page refresh"</Lead>
-    <Row gap={20}>
-      <Stat value="96 s" label="from /agent start to an open PR" />
-      <Stat value="$0.04" label="plan + code + one review round" />
-    </Row>
-    <Row gap={20}>
-      <Stat value="19" label="tool calls by Pi" />
-      <Stat value="0" label="approvals needed: a simple plan" />
-    </Row>
-    <div style={{ fontFamily: mono, fontSize: 24, color: c.text, marginTop: 8 }}>
-      all runs so far: <span style={{ color: c.lime }}>8</span> runs · <span style={{ color: c.lime }}>5</span> PRs ·{' '}
-      <span style={{ color: c.lime }}>$1.04</span>
-    </div>
-  </Frame>
-);
-
-// --- 11 · The recipe ---
+// --- 10 · The recipe ---
 
 const Recipe = ({ n, verb, title, used }: { n: string; verb: string; title: string; used: string }) => (
   <div
@@ -652,6 +613,5 @@ export default [
   Pause,
   Verify,
   Security,
-  Numbers,
   RecipePage,
 ] satisfies Page[];
